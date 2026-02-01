@@ -30,7 +30,7 @@ const TitleCards = ({ title, category }) => {
       .catch(err => console.error('TMDB ERROR:', err))
 
     const el = cardsRef.current
-    el.addEventListener('wheel', handleWheel)
+    el.addEventListener('wheel', handleWheel, { passive: false })
 
     return () => el.removeEventListener('wheel', handleWheel)
   }, [category])
@@ -47,7 +47,17 @@ const TitleCards = ({ title, category }) => {
                 src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                 alt={movie.title}
               />
-              <p>{movie.title}</p>
+
+              {/* Hover overlay */}
+              <div className="card-overlay">
+                <p className="card-title">{movie.title}</p>
+                <button className="watch-btn">
+                  <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                  Watch Now
+                </button>
+              </div>
             </Link>
           )
         ))}

@@ -42,35 +42,36 @@ const Player = () => {
   }, [id])
 
   return (
-    <div className='player'>
-      {/* BACK BUTTON */}
-      <img
-        src={back_arrow_icon}
-        alt="back"
-        className="back-btn"
-        onClick={() => navigate(-1)}
+    <div className="player">
+  {/* BACK BUTTON */}
+  <img
+    src={back_arrow_icon}
+    alt="back"
+    className="back-btn"
+    onClick={() => navigate(-1)}
+  />
+
+  {/* VIDEO CONTAINER */}
+  <div className="video-wrapper">
+    {apiData.key && (
+      <iframe
+        src={`https://www.youtube.com/embed/${apiData.key}?autoplay=1&controls=1&modestbranding=1`}
+        title="trailer"
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
       />
+    )}
+  </div>
 
-      {/* VIDEO */}
-      {apiData.key && (
-        <iframe
-          width="90%"
-          height="90%"
-          src={`https://www.youtube.com/embed/${apiData.key}`}
-          title="trailer"
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
-      )}
+  {/* BOTTOM INFO BAR */}
+  <div className="player-info">
+    <span>{apiData.published_at?.slice(0, 10)}</span>
+    <span>{apiData.name}</span>
+    <span className="badge">{apiData.type}</span>
+  </div>
+</div>
 
-      {/* INFO */}
-      <div className="player-info">
-        <p>{apiData.published_at?.slice(0, 10)}</p>
-        <p>{apiData.name}</p>
-        <p>{apiData.type}</p>
-      </div>
-    </div>
   )
 }
 

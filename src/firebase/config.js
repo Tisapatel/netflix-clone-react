@@ -1,15 +1,13 @@
 import { initializeApp } from "firebase/app";
 import {
-  createUserWithEmailAndPassword,
   getAuth,
+  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut
+  signOut,
+  GoogleAuthProvider,
+  signInWithPopup
 } from "firebase/auth";
-import {
-  addDoc,
-  getFirestore,
-  collection
-} from "firebase/firestore";
+import { getFirestore, addDoc, collection } from "firebase/firestore";
 import { toast } from "react-toastify";
 
 const firebaseConfig = {
@@ -21,52 +19,59 @@ const firebaseConfig = {
   appId: "1:224038493788:web:a5da09a84e30a43fd89099"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
 
-
+/* ---------------- SIGNUP ---------------- */
 const signup = async (name, email, password) => {
   try {
     const res = await createUserWithEmailAndPassword(auth, email, password);
-    const user = res.user;
 
     await addDoc(collection(db, "users"), {
-      uid: user.uid,
-      name: name,
-      email: email,
-      authProvider: "local",
+      uid: res.user.uid,
+      name,
+      email,
+      provider: "email",
       createdAt: new Date()
     });
 
-    console.log("Signup Successful");
+    return res.user;
   } catch (error) {
-    console.log(error.message);
-    toast.error(error.code.split('/')[1].split('-').join(" "));
+    toast.error(error.code.split("/")[1].replaceAll("-", " "));
+    throw error; 
   }
 };
 
-
+/* ---------------- LOGIN ---------------- */
 const login = async (email, password) => {
   try {
-    await signInWithEmailAndPassword(auth, email, password);
-    console.log("Login Successful");
+    const res = await signInWithEmailAndPassword(auth, email, password);
+    return res.user;
   } catch (error) {
-    console.log(error.message);
-     toast.error(error.code.split('/')[1].split('-').join(" "));
+    if (error.code === "auth/user-not-found") {
+      toast.error("Account not found. Please Sign Up first");
+    } else {
+      toast.error(error.code.split("/")[1].replaceAll("-", " "));
+    }
+    throw error;
   }
 };
 
+/* ---------------- GOOGLE LOGIN ---------------- */
+const googleLogin = async () => {
+  try {
+    const res = await signInWithPopup(auth, googleProvider);
+    return res.user;
+  } catch (error) {
+    toast.error("Google login failed");
+    throw error;
+  }
+};
 
 const logout = async () => {
-  try {
-    await signOut(auth);
-    console.log("Logout Successful");
-  } catch (error) {
-    console.log(error.message);
-     toast.error(error.code.split('/')[1].split('-').join(" "));
-  }
+  await signOut(auth);
 };
 
-export { auth, db, signup, login, logout };
+export { auth, signup, login, googleLogin, logout };
