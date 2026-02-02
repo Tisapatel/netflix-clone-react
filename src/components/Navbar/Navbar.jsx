@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './Navbar.css'
 import logo from '../../assets/logo.png'
 import search_icon from '../../assets/search_icon.svg'
@@ -6,15 +6,20 @@ import bell_icon from '../../assets/bell_icon.svg'
 import profile_img from '../../assets/profile_img.png'
 import caret_icon from '../../assets/caret_icon.svg'
 import { useNavigate } from 'react-router-dom'
-import { logout } from '../../firebase/config'
-
-
+import { logout, auth } from '../../firebase/config'
 
 const Navbar = () => {
-
   const navRef = useRef(null)
   const navigate = useNavigate()
+  const [user, setUser] = useState(null)
 
+  // Track logged in user
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+      setUser(currentUser)
+    })
+    return () => unsubscribe()
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,19 +29,18 @@ const Navbar = () => {
         navRef.current.classList.remove('nav-dark')
       }
     }
-
     window.addEventListener('scroll', handleScroll)
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
   const handleLogout = async () => {
-  await logout()
-  navigate('/login')
-}
+    await logout()
+    navigate('/login')
+  }
 
-
+  const goToProfile = () => {
+    navigate('/profile') // yeh tumhara profile page route
+  }
 
   return (
     <div ref={navRef} className='navbar'>
@@ -58,13 +62,16 @@ const Navbar = () => {
         <p>Children</p>
         <img src={bell_icon} alt="" className='icons' />
 
-        <div className="navbar-profile">
-          <img src={profile_img} alt="" className='profile' />
-          <img src={caret_icon} alt="" />
-          <div className="dropdown">
-            <p onClick={handleLogout}>Sign Out of Netflix</p>
+        {user && (
+          <div className="navbar-profile">
+            <img src={profile_img} alt="" className='profile' />
+            <img src={caret_icon} alt="" />
+            <div className="dropdown">
+              <p onClick={goToProfile}>Manage Profiles</p>
+              <p onClick={handleLogout}>Sign Out of Netflix</p>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   )

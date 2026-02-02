@@ -2,7 +2,7 @@
     height: 100vh;
     background-image:
       linear-gradient(#0000007e, #0000007e),
-      url('/background_banner.jpg');
+      url('/bg.png');
     background-size: cover;
     background-position: center;
     padding: 20px 8%;
@@ -184,6 +184,40 @@
     font-weight: 500;
     color: #8c8c8c;
 }
+/* 🔥 ICON SIZE FORCE FIX */
+.auth-btn svg,
+.auth-btn img {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+}
+
+/* ===== OR DIVIDER (GLOBAL) ===== */
+.divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    color: #737373;
+    font-size: 14px;
+    margin: 24px 0;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #333;
+}
+
+.divider::before {
+    margin-right: 12px;
+}
+
+.divider::after {
+    margin-left: 12px;
+}
 
 /* Submit Button */
 .submit-btn {
@@ -287,7 +321,19 @@
         gap: 8px;
     }
 
-    .form-divider span {
-        font-size: 13px;
+}
+@media (max-width: 768px) {
+    .auth-btn svg,
+    .auth-btn img {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-btn svg,
+    .auth-btn img {
+        width: 18px;
+        height: 18px;
     }
 }
