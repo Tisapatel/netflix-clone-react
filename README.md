@@ -8,8 +8,8 @@ This project demonstrates real-world authentication flow, protected routes, and 
 ---
 
 ## 🚀 Live Demo
-🔗 https://your-live-project-link.com  
-*(Replace with your deployed project link)*
+🔗 https://netflix-clone-react-beta-two.vercel.app/login
+
 
 ---
 
